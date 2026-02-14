@@ -1,28 +1,61 @@
 # Lead-Response-Assistant---Property-Inquiry-Lead-Assistant
-run on terminal "streamlit run main.py" for the prototype
 
-##Project Overview: Lead Response Assistant
+Run the App:streamlit run main.py
 
-a. How the System Works:
-The system utilizes a Stateful Agentic Workflow powered by LangGraph, Groq (Llama-3), and FAISS. It avoids linear prompting in favor of a structured graph logic:
--Intent Categorization Node: Analyzes the user's raw input to identify the specific property issue (e.g., dampness, leaks) and urgency level.
--RAG Retrieval Node: Queries a local FAISS Vector Store containing verified safety protocols and company SOPs to find "Grounded Truth" relevant to the issue.
--State Management: A TypedDict state carries data (user query, intent, retrieved context) across nodes, ensuring the LLM has all necessary facts before drafting.
--Response Generation Node: Synthesizes the retrieved technical context with the user's query to produce a professional, empathetic reply.
+# 🏠 Property Lead Response Assistant
 
-b. Ensuring Accuracy and Reliability
-To meet the requirement of a "Safe" and "Client-Ready" assistant, the following mechanisms are implemented:
--Retrieval-Augmented Generation (RAG): By grounding the LLM in a vector database, the system is forced to use provided protocols rather than relying on internal      parametric memory, which prevents hallucinations regarding repair costs.
--Deterministic Reasoning: Setting the model Temperature to 0 ensures consistent, non-creative, and professional outputs across different runs.
--Negative Constraint Enforcement: The system prompt explicitly forbids specific high-risk behaviors, such as providing cost estimates or guaranteeing fixes without   an inspection.
--Modular Node Logic: Separating "Thinking" (Analysis) from "Writing" (Generation) reduces cognitive load on the LLM, leading to higher logical precision.
+An intelligent, stateful AI workflow designed to convert raw customer inquiries into professional, grounded, and safe property diagnostic responses. This system moves beyond simple prompting by using **LangGraph** for logic control and **FAISS** for Retrieval-Augmented Generation (RAG).
 
-c. Known Limitations
--Text-Only Modality: The assistant cannot visually inspect photos of the damage. It relies entirely on the user's verbal description, which may be inaccurate or      incomplete.
--Vector Semantic Collisions: In cases of extremely vague input, the FAISS similarity search may retrieve broadly related documents that aren't perfectly specific     to the niche sub-issue.
--Static Knowledge Base: The current FAISS index is built from a static source; it does not yet support real-time updates from a live technical database or CRM.
+---
 
-d. Future Improvements
--Cross-Encoder Reranking: Adding a reranking stage after retrieval to mathematically verify the semantic relevance of the top-k documents before passing them to      the LLM.
--Multimodal Integration: Implementing Vision-Language Models (e.g., Llama-3.2 Vision) to allow the assistant to analyze user-uploaded photos of dampness or           structural cracks for better triage.
--Persistence Layer: Connecting the graph to a persistent database (like PostgreSQL) to maintain long-term memory of lead interactions across multiple days or         sessions.
+## 🚀 Key Features
+* **Intelligent Intent Analysis:** Automatically categorizes inquiries (e.g., Dampness, Leaks) and assesses urgency.
+* **Grounded Truth (RAG):** Uses a FAISS vector store to ensure advice follows official safety protocols.
+* **Anti-Hallucination Guardrails:** Explicitly engineered to avoid making false promises or giving unauthorized cost estimates.
+* **Real-time Process Monitoring:** A built-in Streamlit dashboard that visualizes the AI's internal "thinking" process.
+
+---
+
+## 🛠️ Technical Stack
+* **Orchestration:** [LangGraph](https://github.com/langchain-ai/langgraph) (Stateful Directed Acyclic Graph)
+* **LLM:** [Groq](https://groq.com/) (Llama-3-70b) for high-speed, high-reasoning inference.
+* **Vector Database:** [FAISS](https://github.com/facebookresearch/faiss) (Local index)
+* **Embeddings:** `all-MiniLM-L6-v2` via HuggingFace (Local & Lightweight)
+* **Interface:** Streamlit
+
+---
+
+## 🧠 How the System Works
+The assistant follows a structured **Stateful Workflow**:
+
+1.  **Analyze Intent Node:** Identifies the core issue and extracts keywords (e.g., "Bedroom," "Heavy rain").
+2.  **Retrieve Knowledge Node:** Queries the FAISS index to find relevant safety guidelines and clarifying questions.
+3.  **Draft Response Node:** Combines the user query with retrieved "Grounded Truth" to generate a professional, empathetic reply.
+
+
+
+---
+
+## ✅ Accuracy & Reliability
+To ensure the output is "Client-Ready," the system implements:
+* **Temperature=0:** Ensures deterministic, professional responses without "creative" hallucinations.
+* **Negative Prompting:** Strict constraints prevent the AI from quoting prices or guaranteeing fixes.
+* **Source Grounding:** The AI is instructed to prioritize the safety context retrieved from the vector store over its general training data.
+
+---
+
+## ⚠️ Known Limitations
+* **Text-Only Context:** The current system lacks computer vision and cannot analyze photos of damage.
+* **Static Index:** The knowledge base is currently loaded from a local file rather than a live-syncing database.
+* **Semantic Collisions:** Extremely vague queries may occasionally pull broadly related instead of highly specific protocols.
+
+---
+
+## 🔮 Future Improvements
+* **Cross-Encoder Reranking:** Adding a secondary reranking step after FAISS to maximize the semantic relevance of retrieved safety protocols.
+* **Multimodal Analysis:** Integrating Vision-Language Models (e.g., Llama-3.2 Vision) to allow the AI to "see" and triage dampness patterns.
+* **Postgres Persistence:** Implementing long-term memory to maintain lead context across multiple days or sessions.
+* **Dynamic Knowledge Pipeline:** Connecting the FAISS store to a live CRM or technical documentation API.
+
+---
+
